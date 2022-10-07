@@ -1,4 +1,3 @@
 .vscode/
-Glew and Glut/
-freeglut.dll
-**/Debug/**
+**/Debug/
+packages/
