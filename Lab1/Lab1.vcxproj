@@ -133,7 +133,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BasicGraph\BasicGraph.cpp" />
+    <ClCompile Include="BasicGraph\Circle.cpp" />
+    <ClCompile Include="BasicGraph\Line.cpp" />
+    <ClCompile Include="BasicGraph\Point.cpp" />
+    <ClCompile Include="BasicGraph\Poly.cpp" />
+    <ClCompile Include="BasicGraph\RGBCode.cpp" />
     <ClCompile Include="Lab1.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BasicGraph\BasicGraph.h" />
+    <ClInclude Include="BasicGraph\Circle.h" />
+    <ClInclude Include="BasicGraph\Line.h" />
+    <ClInclude Include="BasicGraph\Point.h" />
+    <ClInclude Include="BasicGraph\Poly.h" />
+    <ClInclude Include="BasicGraph\RGBCode.h" />
+    <ClInclude Include="BasicGraph\Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
