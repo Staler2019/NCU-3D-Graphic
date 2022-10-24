@@ -13,6 +13,5 @@ void RGBCode::randomRGB() {
     this->r = (float)rand() / (float)RAND_MAX;
     this->g = (float)rand() / (float)RAND_MAX;
     this->b = (float)rand() / (float)RAND_MAX;
-
     return;
 }

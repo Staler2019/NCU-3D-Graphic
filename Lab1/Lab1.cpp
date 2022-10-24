@@ -141,6 +141,7 @@ void mouse(int bin, int state, int x, int y) {
     }
 
     if (state == GLUT_DOWN && bin == GLUT_LEFT_BUTTON) last_point.setXY(x, y);
+
     return;
 }
 

@@ -27,6 +27,5 @@ void Point::draw() {
     glBegin(GL_POINTS);
     glVertex2i(this->x, WINDOW_HEIGHT - this->y);
     glEnd();
-
     return;
 }
