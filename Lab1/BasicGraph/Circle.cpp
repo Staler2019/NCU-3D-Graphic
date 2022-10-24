@@ -10,14 +10,14 @@ Circle::Circle() : BasicGraph() { return; }
 
 Circle::Circle(Point o, Point count_r, RGBCode edge_rgbc, float edge_size)
     : o(o), BasicGraph(edge_rgbc, edge_size) {
-    this->r = std::sqrt(std::pow(count_r.getX() - o.getX(), 2) +
-                        std::pow(count_r.getY() - o.getY(), 2));
+    this->r = float(std::sqrt(std::pow(count_r.getX() - o.getX(), 2) +
+                        std::pow(count_r.getY() - o.getY(), 2)));
 
     return;
 }
 
 void Circle::draw() {
-    float cutting_point = this->r * std::sqrt(2);
+    float cutting_point = this->r * float(std::sqrt(2));
 
     // clockwise with mirror
     // y-base: 7/4 pi~ 3/4 pi

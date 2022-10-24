@@ -20,69 +20,45 @@ void Line::draw() {
     float m;
     enum LineBase lb;
 
+    int (Point::*base_func)(void) = 0;
+    int (Point::*in_counter_func)(void) = 0;
+
     if (std::abs(this->end_p.getY() - this->start_p.getY()) >
         std::abs(this->end_p.getX() - this->start_p.getX())) {
         lb = LINE_BASE_Y;
-        m = (float)(this->end_p.getX() - this->start_p.getX()) /
-            (float)(this->end_p.getY() - this->start_p.getY());
-
-        if (this->start_p.getY() > this->end_p.getY()) {
-            base[0] = this->end_p.getY();
-            in_counter[0] = this->end_p.getX();
-            base[1] = this->start_p.getY();
-            in_counter[1] = this->start_p.getX();
-        } else {
-            base[0] = this->start_p.getY();
-            in_counter[0] = this->start_p.getX();
-            base[1] = this->end_p.getY();
-            in_counter[1] = this->end_p.getX();
-        }
-    } else {
+        base_func = &Point::getY;
+        in_counter_func = &Point::getX;
+    } else {  // LINE_BASE_X
         lb = LINE_BASE_X;
-        m = (float)(this->end_p.getY() - this->start_p.getY()) /
-            (float)(this->end_p.getX() - this->start_p.getX());
-
-        if (this->start_p.getX() > this->end_p.getX()) {
-            base[0] = this->end_p.getX();
-            in_counter[0] = this->end_p.getY();
-            base[1] = this->start_p.getX();
-            in_counter[1] = this->start_p.getY();
-        } else {
-            base[0] = this->start_p.getX();
-            in_counter[0] = this->start_p.getY();
-            base[1] = this->end_p.getX();
-            in_counter[1] = this->end_p.getY();
-        }
+        base_func = &Point::getX;
+        in_counter_func = &Point::getY;
     }
+
+    m = (float)((this->end_p.*in_counter_func)() -
+                (this->start_p.*in_counter_func)()) /
+        (float)((this->end_p.*base_func)() - (this->start_p.*base_func)());
+
+    bool end_first =
+        ((this->start_p.*base_func)() > (this->end_p.*base_func)());
+
+    base[end_first ^ 1] = (this->end_p.*base_func)();
+    in_counter[end_first ^ 1] = float((this->end_p.*in_counter_func)());
+    base[end_first] = (this->start_p.*base_func)();
+    in_counter[end_first] = float((this->start_p.*in_counter_func)());
 
     // cal points
     int b = base[0];
     float ic = in_counter[0];
 
-    // test msg
-    // std::cout << "draw_line: (" << start_p.getX() << ", " << start_p.getY()
-    //           << ")-(" << end_p.getX() << ", " << end_p.getY() << ")"
-    //           << std::endl;
-    // if (lb == LINE_BASE_Y)
-    //     std::cout << "line: (" << ic << ", " << b << ")";
-    // else if (lb == LINE_BASE_X)
-    //     std::cout << "line: (" << b << ", " << ic << ")";
-
     do {
         if (lb == LINE_BASE_Y)
             Point(int(std::floor(ic)), b++, this->edge_rgbc, this->edge_size)
                 .draw();
-        else if (lb == LINE_BASE_X)
+        else  // lb == LINE_BASE_X
             Point(b++, int(std::floor(ic)), this->edge_rgbc, this->edge_size)
                 .draw();
         ic += m;
     } while (b <= base[1]);
-
-    // test msg
-    // if (lb == LINE_BASE_Y)
-    //     std::cout << "-(" << ic-m << ", " << b-1 << ")" << std::endl;
-    // else if (lb == LINE_BASE_X)
-    //     std::cout << "-(" << b-1 << ", " << ic-m << ")" << std::endl;
 
     return;
 }

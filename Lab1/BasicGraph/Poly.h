@@ -19,6 +19,8 @@ class Poly : public BasicGraph {
     void addPoint(Point p);
     void end();
     inline bool isEnded() { return this->point_adding_lock; }
+    Point delLastPoint();
+    inline std::size_t size() { return this->points.size(); }
 };
 
 #endif  // __POLY_H__

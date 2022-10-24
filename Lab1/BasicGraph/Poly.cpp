@@ -1,5 +1,6 @@
 #include "./Poly.h"
 
+#include <iostream>
 #include <vector>
 
 #include "./BasicGraph.h"
@@ -25,7 +26,6 @@ void Poly::addPoint(Point p) {
         Line(this->points.back(), p, this->edge_rgbc, this->edge_size).draw();
         this->points.emplace_back(p);
     }
-
     return;
 }
 
@@ -34,6 +34,22 @@ void Poly::end() {
          this->edge_size)
         .draw();
     this->point_adding_lock = true;
-
     return;
+}
+
+Point Poly::delLastPoint() {
+    if (this->points.size() == 0) {
+        std::cerr << "Poly runtime error because there's no element is poly's "
+                     "vector\n";
+        exit(0);
+    }
+
+    if (this->point_adding_lock) {
+        this->point_adding_lock = 0;
+        return *(this->points.begin());
+    }
+
+    Point tmp = this->points.back();
+    this->points.pop_back();
+    return tmp;
 }

@@ -44,7 +44,8 @@
         "xstring": "cpp",
         "xtr1common": "cpp",
         "xutility": "cpp",
-        "algorithm": "cpp"
+        "algorithm": "cpp",
+        "deque": "cpp"
     },
     "files.exclude": {
         "**/.git": true,
@@ -64,6 +65,7 @@
     },
     "explorerExclude.backup": {},
     "cSpell.words": [
-        "rgbc"
+        "rgbc",
+        "RGBCODE"
     ]
 }

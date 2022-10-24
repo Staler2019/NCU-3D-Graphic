@@ -8,6 +8,7 @@ class BasicGraph {
     float edge_size;
     RGBCode edge_rgbc;
     RGBCode fill_rgbc;
+    // bool nullObj = false;
 
    public:
     BasicGraph();
@@ -24,6 +25,11 @@ class BasicGraph {
         this->edge_size = size;
         return;
     }
+    // inline bool isNULLObj() { return this->nullObj; }
+    // inline bool setNULLObj(bool val = 1) {
+    //     this->nullObj = val;
+    //     return;
+    // }
     // virtual void draw() = 0;
     // virtual void fill() = 0;
 };

@@ -1,5 +1,3 @@
-// #pragma once
-
 #ifndef __RGBCODE_H__
 #define __RGBCODE_H__
 
