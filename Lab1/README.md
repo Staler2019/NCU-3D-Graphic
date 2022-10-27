@@ -18,7 +18,7 @@
    ![env_1](./doc/env_1.png)
 4. `Linker` -> `Additional Library Directories` add `.\Glew and Glut\freeglut\lib`
    ![env_2](./doc/env_2.png)
-5. `Linker` -> `Input` add `freeglut.lib`
+5. `Linker` -> `Input` -> `Additional Dependencies` add `freeglut.lib`
    ![env_3](./doc/env_3.png)
 
 ## TODO
