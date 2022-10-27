@@ -10,6 +10,17 @@
 班級: 資工四A
 ```
 
+## Environment Set Up
+
+1. Open Visual Studio
+2. Open Project's Property Page
+3. `C++` -> `Additional Include Directories` add `.\Glew and Glut\freeglut\include`
+   ![env_1](./doc/env_1.png)
+4. `Linker` -> `Additional Library Directories` add `.\Glew and Glut\freeglut\lib`
+   ![env_2](./doc/env_2.png)
+5. `Linker` -> `Input` add `freeglut.lib`
+   ![env_3](./doc/env_3.png)
+
 ## TODO
 
 - [x] 畫點( d )
