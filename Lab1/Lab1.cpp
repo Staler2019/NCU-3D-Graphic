@@ -89,6 +89,7 @@ void mouse(int bin, int state, int x, int y) {
                 storeScreen();
                 global_rgb = RGBCode();
                 Point(x, y, global_rgb, DEFAULT_SIZE).draw();  // init point
+                glutPostRedisplay();
             } else if (state == GLUT_UP && bin == GLUT_LEFT_BUTTON)
                 dot_drag_mode = 0;
             break;
@@ -100,6 +101,7 @@ void mouse(int bin, int state, int x, int y) {
                 if (!line_mode) {
                     storeScreen();
                     Line(last_point, now_point, RGBCode(), DEFAULT_SIZE).draw();
+                    glutPostRedisplay();
                 }
             }
             break;
@@ -112,6 +114,7 @@ void mouse(int bin, int state, int x, int y) {
                     storeScreen();
                     Circle(last_point, now_point, RGBCode(), DEFAULT_SIZE)
                         .draw();
+                    glutPostRedisplay();
                 }
             }
             break;
@@ -127,10 +130,12 @@ void mouse(int bin, int state, int x, int y) {
                 else {
                     storeScreen();
                     poly_stack.top().addPoint(now_point);
+                    glutPostRedisplay();
                 }
             } else if (state == GLUT_DOWN && bin == GLUT_RIGHT_BUTTON) {
                 storeScreen();
                 poly_stack.top().end();
+                glutPostRedisplay();
             }
             break;
         }
