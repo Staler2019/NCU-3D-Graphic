@@ -22,7 +22,7 @@
 #include "Graph/TransformMatrix.h"
 #include "Graph/Util.h"
 
-#define __TEST__
+// #define __TEST__
 
 #ifdef __TEST__
 #include <sstream>

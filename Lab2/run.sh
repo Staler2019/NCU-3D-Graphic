@@ -1,6 +1,6 @@
 # !/bin/bash
 
-./build.sh
+# ./build.sh
 ### Please Build before Run ###
 
 # read -p "Enter test file: " TESTFILE
