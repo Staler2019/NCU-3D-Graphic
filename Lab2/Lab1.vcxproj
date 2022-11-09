@@ -136,18 +136,19 @@
   <ItemGroup>
     <ClCompile Include="Graph\BasicGraph.cpp" />
     <ClCompile Include="Graph\Circle.cpp" />
+    <ClCompile Include="Graph\ExtendFunction.cpp" />
     <ClCompile Include="Graph\Line.cpp" />
     <ClCompile Include="Graph\Point.cpp" />
     <ClCompile Include="Graph\Poly.cpp" />
     <ClCompile Include="Graph\RGBCode.cpp" />
     <ClCompile Include="Graph\Scene.cpp" />
     <ClCompile Include="Graph\TransformMatrix.cpp" />
-    <ClCompile Include="Graph\Util.cpp" />
     <ClCompile Include="Lab2.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graph\BasicGraph.h" />
     <ClInclude Include="Graph\Circle.h" />
+    <ClInclude Include="Graph\ExtendFunction.h" />
     <ClInclude Include="Graph\Line.h" />
     <ClInclude Include="Graph\Point.h" />
     <ClInclude Include="Graph\Poly.h" />

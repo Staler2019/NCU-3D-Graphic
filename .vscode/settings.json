@@ -61,7 +61,14 @@
         "fstream": "cpp",
         "sstream": "cpp",
         "cinttypes": "cpp",
-        "map": "cpp"
+        "map": "cpp",
+        "list": "cpp",
+        "queue": "cpp",
+        "ranges": "cpp",
+        "span": "cpp",
+        "stack": "cpp",
+        "xhash": "cpp",
+        "xtree": "cpp"
     },
     "files.exclude": {
         "**/.git": true,
@@ -77,7 +84,8 @@
         "**/*.pdb": true,
         "**/*.dll": true,
         "**/*.sln": true,
-        "**/*.vcxproj**": true
+        "**/*.vcxproj**": true,
+        "**/Glew and Glut": true
     },
     "explorerExclude.backup": {},
     "cSpell.words": [
