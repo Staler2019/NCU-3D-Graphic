@@ -156,10 +156,7 @@ void Poly::fill()
         last_point = now_point;
     }
 
-    // 4. fill graph on thw window // TODO. point numbers error
-    // // test
-    // bool printing_test_lock = 0;
-    // // !test
+    // 4. fill graph on thw window
 
     // for each y
     for (float i = highest_y; i >= lowest_y; i -= 1) {
@@ -196,15 +193,6 @@ void Poly::fill()
             [](std::pair<Point, bool> p1, std::pair<Point, bool> p2) { return p1.first.getX() < p2.first.getX(); });
 
         // (3) draw line
-        // // test
-        // if (printing_test_lock) {
-        //     std::cerr << "Test On: print all the points: \n";
-        //     for (auto &lv : line_edge_points) {
-        //         std::cerr << "\t(" << lv.first.getX() << ", " << lv.first.getY() << ")\t" << lv.second << "\n";
-        //     }
-        // }
-        // // !test
-
         // (3-1) case give away
         if (line_edge_points.size() == 0) {
             // std::cerr << "No points on y=" << i << "\n";
@@ -262,60 +250,6 @@ void Poly::fill()
             last_point = now_point;
             last_edge_state = now_edge_state;
         }
-
-        // bool drawState = 1;
-        // int last_edge_state = 0;
-        // last_point = nullptr;
-
-        // if (isSamePoint(line_edge_points[0].first, line_edge_points[1].first)) {
-        //     if ((line_edge_points[0].second == 1 && line_edge_points[1].second == 1) ||
-        //         (line_edge_points[0].second == 0 && line_edge_points[1].second == 0))
-        //         drawState = 0;
-        // }
-
-        // for (int j = 0; j < line_edge_points.size(); j++) {
-        //     Point *now_point = &line_edge_points[j].first;
-        //     int now_edge_state = line_edge_points[j].second;
-
-        //     if (last_point != nullptr) {
-        //         if (isSamePoint(*last_point, *now_point)) {       // vertex
-        //             if ((last_edge_state + now_edge_state) == 1)  // vertex
-        //                 drawState ^= 1;
-        //             else if ((last_edge_state == 1 && now_edge_state == 1) ||
-        //                      (last_edge_state == 0 && now_edge_state == 0)) {  // vertex
-        //                 if (!drawState) {
-        //                     Point(last_point->getX(), last_point->getY(), this->rgbc, 1.0f).draw();
-        //                     std::cerr << "\tdraw point: (" << last_point->getX() << ", " << last_point->getY() <<
-        //                     ")\n";
-        //                 }
-        //             }
-        //             else {
-        //                 std::cerr << "Calculate for vertex error\n";
-        //                 std::cerr << "Printing the points and its state:\n";
-        //                 for (auto &lv : line_edge_points) {
-        //                     std::cerr << "\t(" << lv.first.getX() << ", " << lv.first.getY() << ")\t" <<
-        //                     lv.second
-        //                               << "\n";
-        //                 }
-
-        //                 // test
-        //                 printing_test_lock = 1;
-        //                 // !test
-        //             }
-        //         }
-        //         else {
-        //             if (drawState) {
-        //                 Line(*last_point, *now_point, this->rgbc, 1.0f).draw();
-        //                 std::cerr << "\tdraw line: (" << last_point->getX() << ", " << last_point->getY() <<
-        //                 ")-("
-        //                           << now_point->getX() << ", " << now_point->getY() << ")\n";
-        //             }
-        //             drawState ^= 1;
-        //         }
-        //     }
-        //     last_point = now_point;
-        //     last_edge_state = now_edge_state;
-        // }
     }
 
     return;
