@@ -47,7 +47,7 @@ struct Camera {
      */
     Poly* castToHither(const std::vector<Vector3>& mesh_points, const GRGB& default_rgb) const;
 private:
-    inline Vector3 vec3ToHither(const Vector3& vec) const{
+    inline Point vec3ToHither(const Vector3& vec) const{
         if (vec.v3 < this->Hither || vec.v3 > this->Yon) {
             std::cerr << "Vector out of range of Hither~Yon\n";
             exit(1);
@@ -56,7 +56,16 @@ private:
         // z: near <= vec.v3 <= far
         float scale = this->Hither / vec.v3;
 
-        return Vector3(vec.v1 * scale, vec.v2 * scale, this->Hither);
+        return Point(vec.v1 * scale, vec.v2 * scale);
+    }
+
+    inline int checkPosi(const float z) const{
+        if(z < this->Hither) // too close
+            return 0;
+        else if(z > this->Yon) // too far
+            return 2;
+        else // in
+            return 1;
     }
 //    inline Point castToNear(const Vector3& vec) const
 //    {
