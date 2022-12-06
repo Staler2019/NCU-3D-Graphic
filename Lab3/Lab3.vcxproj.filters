@@ -15,66 +15,90 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\app\Lab3.cpp">
+    <ClCompile Include="apps\Lab3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\BasicGraph.cpp">
+    <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Circle.cpp">
+    <ClCompile Include="src\GObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Line.cpp">
+    <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Point.cpp">
+    <ClCompile Include="src\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Poly.cpp">
+    <ClCompile Include="src\Shape\Circle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\RGBCode.cpp">
+    <ClCompile Include="src\Shape\Line.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Scene.cpp">
+    <ClCompile Include="src\Shape\Point.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\TransformMatrix.cpp">
+    <ClCompile Include="src\Shape\Poly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Graph\Util.cpp">
+    <ClCompile Include="src\Math\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Math\Vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="extern\OBJ-Loader\src\OBJ_Loader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Graph\BasicGraph.h">
+    <ClInclude Include="include\Graph\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Circle.h">
+    <ClInclude Include="include\Graph\GMath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Line.h">
+    <ClInclude Include="include\Graph\GObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Point.h">
+    <ClInclude Include="include\Graph\GRGB.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Poly.h">
+    <ClInclude Include="include\Graph\GShape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\RGBCode.h">
+    <ClInclude Include="include\Graph\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Scene.h">
+    <ClInclude Include="include\Graph\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\TransformMatrix.h">
+    <ClInclude Include="include\Graph\Shape\Circle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Graph\Util.h">
+    <ClInclude Include="include\Graph\Shape\Line.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\OBJ-Loader\OBJ_Loader.h">
+    <ClInclude Include="include\Graph\Shape\Point.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graph\Shape\Poly.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graph\Shape\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graph\Math\Matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graph\Math\Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Graph\Math\Vector.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="extern\OBJ-Loader\include\OBJ_Loader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

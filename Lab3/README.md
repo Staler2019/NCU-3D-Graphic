@@ -142,7 +142,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
   `Tilt` 為攝影機傾斜的角度。
 
   :warning::warning::warning:
-  攝影機的 forward、up、right 應該是正交的。
+  攝影機的 `forward`、`up`、`right` 應該是正交的。
   $right=forward×up$
   :warning::warning::warning:
 
@@ -158,7 +158,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 
   請在每一次`display`東西出來時，加上`system("pause");`
 
-  :warning: Linux 沒有 system("pause");，可以使用 fgetc(stdin);代替 :warning:
+  :warning: `Linux` 沒有 `system("pause");`，可以使用 `fgetc(stdin);`代替 :warning:
 
   這次畫點的時候不需要 `height-y`。
 

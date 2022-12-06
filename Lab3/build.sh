@@ -2,8 +2,8 @@
 mkdir -p build
 cd build
 
-cmake ../src
-make
+cmake ..
+make -j4
 
-rm -rf ./test/
-cp -R ../test/ ./test/
+# rm -rf ./test/
+# cp -R ../test/ ./test/

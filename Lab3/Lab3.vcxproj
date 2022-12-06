@@ -18,6 +18,38 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="apps\Lab3.cpp" />
+    <ClCompile Include="extern\OBJ-Loader\src\OBJ_Loader.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\GObj.cpp" />
+    <ClCompile Include="src\Math\Matrix.cpp" />
+    <ClCompile Include="src\Math\Vector.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\Shape\Circle.cpp" />
+    <ClCompile Include="src\Shape\Line.cpp" />
+    <ClCompile Include="src\Shape\Point.cpp" />
+    <ClCompile Include="src\Shape\Poly.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="extern\OBJ-Loader\include\OBJ_Loader.h" />
+    <ClInclude Include="include\Graph\Camera.h" />
+    <ClInclude Include="include\Graph\GMath.h" />
+    <ClInclude Include="include\Graph\GObj.h" />
+    <ClInclude Include="include\Graph\GRGB.h" />
+    <ClInclude Include="include\Graph\GShape.h" />
+    <ClInclude Include="include\Graph\Math\Matrix.h" />
+    <ClInclude Include="include\Graph\Math\Util.h" />
+    <ClInclude Include="include\Graph\Math\Vector.h" />
+    <ClInclude Include="include\Graph\Scene.h" />
+    <ClInclude Include="include\Graph\Shape\Circle.h" />
+    <ClInclude Include="include\Graph\Shape\Line.h" />
+    <ClInclude Include="include\Graph\Shape\Point.h" />
+    <ClInclude Include="include\Graph\Shape\Poly.h" />
+    <ClInclude Include="include\Graph\Shape\Shape.h" />
+    <ClInclude Include="include\Graph\Transform.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -76,12 +108,12 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\src;.\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include\Graph;.\extern\OBJ-Loader\include;.\extern\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>.\Glew and Glut\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>.\extern\Glew and Glut\freeglut\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeglut.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -129,30 +161,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="src\app\Lab3.cpp" />
-    <ClCompile Include="src\Graph\BasicGraph.cpp" />
-    <ClCompile Include="src\Graph\Circle.cpp" />
-    <ClCompile Include="src\Graph\Line.cpp" />
-    <ClCompile Include="src\Graph\Point.cpp" />
-    <ClCompile Include="src\Graph\Poly.cpp" />
-    <ClCompile Include="src\Graph\RGBCode.cpp" />
-    <ClCompile Include="src\Graph\Scene.cpp" />
-    <ClCompile Include="src\Graph\TransformMatrix.cpp" />
-    <ClCompile Include="src\Graph\Util.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Graph\BasicGraph.h" />
-    <ClInclude Include="src\Graph\Circle.h" />
-    <ClInclude Include="src\Graph\Line.h" />
-    <ClInclude Include="src\Graph\Point.h" />
-    <ClInclude Include="src\Graph\Poly.h" />
-    <ClInclude Include="src\Graph\RGBCode.h" />
-    <ClInclude Include="src\Graph\Scene.h" />
-    <ClInclude Include="src\Graph\TransformMatrix.h" />
-    <ClInclude Include="src\Graph\Util.h" />
-    <ClInclude Include="src\OBJ-Loader\OBJ_Loader.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
