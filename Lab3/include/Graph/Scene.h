@@ -1,72 +1,61 @@
 #pragma once
 
-// TODO.
-
 #include <map>
 #include <queue>
 #include <vector>
 
 #include "Camera.h"
-#include "GRGB.h"
 #include "GObj.h"
+#include "GRGB.h"
 #include "Shape/Line.h"
 #include "Shape/Poly.h"
 
-struct SceneMask {
+struct ViewPort {
     float vxl;
     float vxr;
     float vyb;
     float vyt;
 };
 
-/**
- * my scene flow:
- * - for each layer
- *      (1) obj make its own transform
- *      (2) make camera transform
- *      (3) move to screen loc
- *      (4) cut to show size
- *      (5) draw/fill
- *      (6) delete each tmp scene
- */
 class Scene {
-private:
+   private:
     std::vector<GObj *> layers;
     GRGB default_rgb;
     int win_width;
     int win_height;
-    SceneMask sm;
+    ViewPort vp;
 
+    inline Vector3 perspectiveDivide(const Vector4 vec4) const
+    {
+        const float w = vec4.v4;
+        return Vector3(vec4.v1 / w, vec4.v2 / w, vec4.v3 / w);
+    }
 
-    /**
-     * 2D scene cut
-     * @param poly pointer from poly (from Camera::castToNear)
-     * @param left
-     * @param right
-     * @param top
-     * @param bottom
-     * @return
-     */
-    Poly *cutPoly(const Poly *poly, const float left = this->win_width * (1 - this->sm.vxl) / 2,
-                  const float right = this->win_width * (1 + this->sm.vxr) / 2,
-                  const float top = this->win_height * (1 + this->sm.vyt) / 2,
-                  const float bottom = this->win_height * (1 - this->sm.vyb) / 2) const;
+    Transform2D getViewportTransform() const;
 
-public:
-    inline Scene() { this->default_rgb = GRGB(1.0f, 0.0f, 0.0f); }
+    void drawViewport(const Transform2D &tr) const;
 
-    inline void setWindow(const int win_width, const int win_height) {
+    inline constexpr float getAspectRatio() const
+    {
+        return this->win_width / this->win_height;
+    }
+
+   public:
+    inline Scene() { this->default_rgb = GRGB(0.0f, 1.0f, 0.0f); }
+
+    inline void setWindow(const int win_width, const int win_height)
+    {
         this->win_width = win_width;
         this->win_height = win_height;
     }
 
-    inline void setViewport(const float vxl, const float vxr, const float vyb, const float vyt) {
-        this->sm = {
-                .vxl = vxl,
-                .vxr = vxr,
-                .vyb = vyb,
-                .vyt = vyt,
-        };
+    inline void setViewport(const float vxl, const float vxr, const float vyb,
+                            const float vyt)
+    {
+        this->vp.vxl = vxl;
+        this->vp.vxr = vxr;
+        this->vp.vyb = vyb;
+        this->vp.vyt = vyt;
     }
 
     inline void addLayer(GObj *ol) { this->layers.push_back(ol); }
@@ -76,29 +65,9 @@ public:
     void clear();
 };
 
+std::vector<Vector4> cutFace(std::vector<Vector4> vec4s);
 
-// class Scene {
-//     // std::map<int, BasicGraph *> layer; // TODO. only poly now
-//     std::map<int, Poly *> layer;  // 0 as the bottom layer // TODO. use factory classes
+float getPlaneC(const int plane_i, const Vector4 *vec4);
 
-//    public:
-//     Scene();
-
-//     // void addLayer(BasicGraph *bg); // TODO. only poly now
-//     void addLayer(Poly *bg);
-//     void show(float scene_left, float scene_right, float scene_bottom, float scene_top, float window_left,
-//               float window_right, float window_bottom, float window_top);
-//     void clear();
-// };
-
-// class Scene3D { //TODO.
-//     std::map<int, objl::Loader> layer;
-
-//    public:
-//     Scene3D();
-
-//     void addObj(objl::Loader* ol);
-//     void setViewPort(float xl, float vxr, float vyb, float vyt);
-//     void show(Camera cam);
-//     void clear();
-// };
+Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4, const Vector4 *now_vec4,
+                       const float last_c, const float now_c);

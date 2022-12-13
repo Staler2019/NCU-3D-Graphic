@@ -6,201 +6,217 @@
 #include "GRGB.h"
 #include "Math/Util.h"
 #include "Math/Vector.h"
-#include "OBJ_Loader.h"
 #include "Shape/Line.h"
 #include "Shape/Point.h"
 #include "Shape/Poly.h"
 #include "Transform.h"
 
-Poly* Scene::cutPoly(const Poly* poly, const float left, const float right, const float top, const float bottom) const
+Transform2D Scene::getViewportTransform() const
 {
-    // cut edge and add to printing_graph
-    std::cerr << "---for each poly---\n";
-    // (1) init
-    std::vector<Point> poly_points = poly->getPoints();
+    Vector2 tmp_tran((1.0f + this->vp.vxl) * this->win_width / 2,
+                     (1.0f + this->vp.vyb) * this->win_width / 2);
+    Vector2 tmp_scal((this->vp.vxr - this->vp.vxl) * this->win_width / 4,
+                     (this->vp.vyt - this->vp.vyb) * this->win_width / 4);
 
-    // test
-    // std::cerr << "View adding point each poly: ";
-    // std::cerr << "(" << now_p->getX() << ":" << now_p->getY() << "), ";
-    // !test
+    Transform2D tr;
+    std::cerr << "To screen:\n";  // TODO.
+    tr.translate(Vector2(1.0f, 1.0f));
+    tr.scale(tmp_scal);
+    tr.translate(tmp_tran);
 
-    // (2) cut with the Line(*last_p, *now_p) & *now_p
-    // top
-    const float &top_edge = top;
-    Point* last_p = &poly_points[poly_points.size() - 1];
-    std::vector<Point> tmp_poly_points;
-
-    for (int i = 0; i < poly_points.size(); i++) {
-        Point* now_p = &poly_points[i];
-
-        bool last_posi = (last_p->getY() <= top_edge);  // 1:in, 0:out
-        bool now_posi = (now_p->getY() <= top_edge);
-
-        if (last_posi && now_posi)
-            tmp_poly_points.push_back(*now_p);
-        else if (last_posi ^ now_posi) {  // xor
-            Point tmp_p = Line(*last_p, *now_p).calYCrossPoint(top_edge);
-
-            // last point has been deal with if in(including on line), sod don't double added
-            if (last_p->getY() != top_edge) tmp_poly_points.push_back(tmp_p);
-
-            // now_posi is in, so just add when *now_p isn't on the line
-            if (now_p->getY() < top_edge) tmp_poly_points.push_back(*now_p);
-        }
-
-        last_p = now_p;
-    }
-
-    poly_points = tmp_poly_points;
-
-    if (!poly_points.size()) return nullptr;
-    for (auto& p : poly_points) std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-    std::cerr << "\n";
-
-    // left
-    const float &left_edge = left;
-    last_p = &poly_points[poly_points.size() - 1];
-    tmp_poly_points.clear();
-
-    for (int i = 0; i < poly_points.size(); i++) {
-        Point* now_p = &poly_points[i];
-
-        bool last_posi = last_p->getX() >= left_edge;  // 1:in, 0:out
-        bool now_posi = now_p->getX() >= left_edge;
-
-        if (last_posi && now_posi)
-            tmp_poly_points.push_back(*now_p);
-        else if (last_posi ^ now_posi) {  // xor
-            Point tmp_p = Line(*last_p, *now_p).calXCrossPoint(left_edge);
-
-            // last point has been deal with if in(including on line), sod don't double added
-            if (last_p->getX() != left_edge) tmp_poly_points.push_back(tmp_p);
-
-            // now_posi is in, so just add when *now_p isn't on the line
-            if (now_p->getX() > left_edge) tmp_poly_points.push_back(*now_p);
-        }
-
-        last_p = now_p;
-    }
-
-    poly_points = tmp_poly_points;
-
-    if (!poly_points.size()) return nullptr;
-    for (auto& p : poly_points) std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-    std::cerr << "\n";
-
-    // bottom
-    const float &bottom_edge = bottom;
-    last_p = &poly_points[poly_points.size() - 1];
-    tmp_poly_points.clear();
-
-    for (int i = 0; i < poly_points.size(); i++) {
-        Point* now_p = &poly_points[i];
-
-        bool last_posi = last_p->getY() >= bottom_edge;  // 1:in, 0:out
-        bool now_posi = now_p->getY() >= bottom_edge;
-
-        if (last_posi && now_posi)
-            tmp_poly_points.push_back(*now_p);
-        else if (last_posi ^ now_posi) {  // xor
-            Point tmp_p = Line(*last_p, *now_p).calYCrossPoint(bottom_edge);
-
-            // last point has been deal with if in(including on line), sod don't double added
-            if (last_p->getY() != bottom_edge) tmp_poly_points.push_back(tmp_p);
-
-            // now_posi is in, so just add when *now_p isn't on the line
-            if (now_p->getY() > bottom_edge) tmp_poly_points.push_back(*now_p);
-        }
-
-        last_p = now_p;
-    }
-
-    poly_points = tmp_poly_points;
-
-    if (!poly_points.size()) return nullptr;
-    for (auto& p : poly_points) std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-    std::cerr << "\n";
-
-    // right
-    const float &right_edge = right;
-    last_p = &poly_points[poly_points.size() - 1];
-    tmp_poly_points.clear();
-
-    for (int i = 0; i < poly_points.size(); i++) {
-        Point* now_p = &poly_points[i];
-
-        bool last_posi = last_p->getX() <= right_edge;  // 1:in, 0:out
-        bool now_posi = now_p->getX() <= right_edge;
-
-        if (last_posi && now_posi)
-            tmp_poly_points.push_back(*now_p);
-        else if (last_posi ^ now_posi) {  // xor
-            Point tmp_p = Line(*last_p, *now_p).calXCrossPoint(right_edge);
-
-            // last point has been deal with if in(including on line), sod don't double added
-            if (last_p->getX() != right_edge) tmp_poly_points.push_back(tmp_p);
-
-            // now_posi is in, so just add when *now_p isn't on the line
-            if (now_p->getX() < right_edge) tmp_poly_points.push_back(*now_p);
-        }
-
-        last_p = now_p;
-    }
-
-    poly_points = tmp_poly_points;
-
-    if (!poly_points.size()) return nullptr;
-    for (auto& p : poly_points) std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-    std::cerr << "\n";
-
-    // (3) add to printing_graph
-    return new Poly(poly_points, this->default_rgb, 1.0f);
+    return tr;
 }
 
-void Scene::show(const Camera& cam) const
+void Scene::drawViewport(const Transform2D &tr) const
 {
-    // view_space -> world_space
-    Transform3D tr_show;  // object's transform
-    // sol.1
-    // // step 1: translate loc
-    tr_show.translate(cam.getPosi().inverse(), false);
-    // // step 2, 3, 4: rotate to z-axis
-    float tmp_deg_y = toDegree(atan(cam.getFromTo().v1 / cam.getFromTo().v3));
-    float tmp_deg_x = toDegree(asin(cam.getFromTo().v2));
+    Point lb = tr.getResult(Point(-1.0f, -1.0f));
+    Point lt = tr.getResult(Point(-1.0f, 1.0f));
+    Point rb = tr.getResult(Point(1.0f, -1.0f));
+    Point rt = tr.getResult(Point(1.0f, 1.0f));
 
-    std::cerr << "Observer:\n";
-    tr_show.rotate(Vector3(tmp_deg_x, tmp_deg_y, cam.getTilt()), false);
-    std::cerr << "End of Observer\n";
+    std::cerr << lb << " " << lt << " " << rb << " " << rt << std::endl;
 
-    // perspective projection
-    for (GObj* ol : this->layers) {                  // for each layer
-        for (objl::Mesh& mesh : ol->LoadedMeshes) {  // for each triangle
-            Poly to_near_poly;
-            // TODO. calculate is the plane on the front
-            for (objl::Vertex& ver : mesh.Vertices) {  // for each vertex
-                Vector3 tmp_vec(ver.Position.X, ver.Position.Y, ver.Position.Z);
-                // TODO. not all the obj file has position
-                tmp_vec = ol->tr.getResult(tmp_vec);
-                tmp_vec = tr_show.getResult(tmp_vec);
-                Point tmp_vec_p = cam.toNearPoint(tmp_vec);
-                if (!tmp_vec_p.isNULLObj()) to_near_poly.addPoint(tmp_vec_p, false);
+    Line(lb, lt, GRGB(1.0f, 1.0f, 1.0f)).draw();
+    Line(lt, rt, GRGB(1.0f, 1.0f, 1.0f)).draw();
+    Line(rt, rb, GRGB(1.0f, 1.0f, 1.0f)).draw();
+    Line(rb, lb, GRGB(1.0f, 1.0f, 1.0f)).draw();
+}
+
+std::vector<Vector4> cutFace(std::vector<Vector4> vec4s)
+{
+    // cut line
+    std::vector<Vector4> tmp_vec4s;
+    Vector4 *last_vec4, *now_vec4;
+    float last_c, now_c;
+
+    for (int plane_i = 0; plane_i < 6; plane_i++) {
+        last_vec4 = &vec4s[vec4s.size() - 1];
+        last_c = getPlaneC(plane_i, last_vec4);
+
+        for (int i = 0; i < vec4s.size(); i++) {
+            now_vec4 = &vec4s[i];
+            now_c = getPlaneC(plane_i, now_vec4);
+
+            if (now_c >= 0) {
+                if (last_c < 0) {
+                    Vector4 *tmp_vec4 =
+                        calcPlaneVec4(plane_i, last_vec4, now_vec4, last_c, now_c);
+
+                    if (tmp_vec4 != nullptr) tmp_vec4s.push_back(*tmp_vec4);
+
+                    delete tmp_vec4;
+                }
+                tmp_vec4s.push_back(*now_vec4);
             }
-            // cut
-            Poly* cut_poly = this->cutPoly(to_near_poly);
+            else {
+                Vector4 *tmp_vec4 =
+                    calcPlaneVec4(plane_i, last_vec4, now_vec4, last_c, now_c);
 
-            if (cut_poly != nullptr) {
-                // TODO. scale to windows_size
-                Transform2D tr_win_scale;
-                tr_win_scale.translate(this->vxl, this->vyb, false);
-                tr_win_scale.scale(this->win_width / (this->vxr - this->vxl),
-                                   this->win_height / (this->vyt - this->vyb), false);
+                if (tmp_vec4 != nullptr) tmp_vec4s.push_back(*tmp_vec4);
 
-                Poly* draw_poly;
-                cut_poly->addTransform(tr_win_scale);
+                delete tmp_vec4;
+            }
 
-                // draw
-                cut_poly->draw();
-                delete cut_poly;
+            last_vec4 = now_vec4;
+            last_c = now_c;
+        }
+
+        vec4s = tmp_vec4s;
+        tmp_vec4s.clear();
+    }
+
+    return vec4s;
+}
+
+float getPlaneC(const int plane_i, const Vector4 *vec4)
+{
+    const float &x = vec4->v1;
+    const float &y = vec4->v2;
+    const float &z = vec4->v3;
+    const float &w = vec4->v4;
+
+    switch (plane_i) {
+        case 0: {
+            return w + x;
+        }
+        case 1: {
+            return w - x;
+        }
+        case 2: {
+            return w + y;
+        }
+        case 3: {
+            return w - y;
+        }
+        case 4: {
+            return z;
+        }
+        case 5: {
+            return w - z;
+        }
+        default: {
+            std::cerr << "plane_i index error\n";
+            exit(1);
+        }
+    }
+}
+
+Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4, const Vector4 *now_vec4,
+                       const float last_c, const float now_c)
+{
+    Vector4 *tmp_vec4 = new Vector4();
+
+    *tmp_vec4 = *last_vec4;
+
+    if (last_c != now_c) {
+        float t = last_c / (last_c - now_c);
+
+        *tmp_vec4 += (*now_vec4 - *last_vec4) * t;
+
+        return tmp_vec4;
+    }
+    else {
+        std::cerr << "calculate plane vector4 on plane_i: " << plane_i
+                  << "error (line " << *last_vec4 << " to " << *now_vec4
+                  << ")\n";
+        return nullptr;
+    }
+}
+
+void Scene::show(const Camera &cam) const
+{
+    Transform3D tr_em = cam.getEM();  // object's transform
+    Transform3D tr_pm = cam.getPM(this->getAspectRatio());
+    Transform2D tr_view = this->getViewportTransform();
+
+    this->drawViewport(tr_view);
+
+    for (GObj *ol : this->layers) {  // for each .obj
+        Transform3D tr_tm = ol->getTM();
+
+        // stderr
+        {
+            std::cerr << "Obj: " << ol->getFileName() << "\n";
+            std::cerr << "M Matrix:\n";
+            tr_tm.print();
+            std::cerr << "V Matrix:\n";
+            tr_em.print();
+            std::cerr << "P Matrix:\n";
+            tr_pm.print();
+        }
+
+        for (Face &face : ol->getLoadedFaces()) {  // for each triangle
+            std::vector<Vector3> vecs;
+
+            for (Vector3 &ver : face.vertexes)  // for each vertex
+                vecs.emplace_back(ver.v1, ver.v2, ver.v3);
+
+            // tm
+            {
+                std::vector<Vector3> tmp_vecs;
+
+                for (auto &vec : vecs)
+                    tmp_vecs.emplace_back(tr_tm.getResult(vec));
+
+                vecs = tmp_vecs;
+            }
+            // em
+            {
+                std::vector<Vector3> tmp_vecs;
+
+                for (auto &vec : vecs)
+                    tmp_vecs.emplace_back(tr_em.getResult(vec));
+
+                vecs = tmp_vecs;
+            }
+            // pm
+            std::vector<Vector4> vec4s;
+            {
+                for (auto &vec : vecs)
+                    vec4s.emplace_back(tr_pm.getResult(Vector4(vec, 1)));
+            }
+
+            // vec4s = cutFace(vec4s); // TODO. error
+
+            // perspective divide
+            {
+                vecs.clear();
+
+                for (auto &vec : vec4s)
+                    vecs.emplace_back(this->perspectiveDivide(vec));
+            }
+            // win to view
+            {
+                Point last_p =
+                    tr_view.getResult(Point(vecs.back().v1, vecs.back().v2));
+
+                for (auto &vec : vecs) {
+                    Point now_p = tr_view.getResult(Point(vec.v1, vec.v2));
+
+                    Line(last_p, now_p, this->default_rgb).draw();
+
+                    last_p = now_p;
+                }
             }
         }
     }
@@ -208,219 +224,10 @@ void Scene::show(const Camera& cam) const
 
 void Scene::clear()
 {
-    for (objl::Loader* ol : this->layers) {
-        objl::Loader* tmp_ol = ol;
+    for (auto *ol : this->layers) {
+        auto *tmp_ol = ol;
         ol = nullptr;
         delete tmp_ol;
     }
     this->layers.clear();
 }
-
-// Scene::Scene() { return; }
-
-// void Scene::addLayer(Poly *bg)
-// {
-//     this->layer[this->layer.size()] = bg;
-//     return;
-// }
-
-// void Scene::show(float scene_left, float scene_right, float scene_bottom, float scene_top, float window_left,
-//                  float window_right, float window_bottom, float window_top)
-// {
-//     // 1. error checking
-//     if ((scene_right - scene_left) == 0 || (scene_top - scene_bottom) == 0) {
-//         std::cerr << "Input error window view size\n";
-//         return;
-//     }
-
-//     // 2. make view transform
-//     TransformMatrix result_tr;
-//     result_tr.translate(-scene_left, -scene_bottom, false);
-//     result_tr.scale((window_right - window_left) / (scene_right - scene_left),
-//                     (window_top - window_bottom) / (scene_top - scene_bottom), false);
-//     result_tr.translate(window_left, window_bottom, false);
-
-//     // 3. drawing window's edge
-//     Poly(std::vector<Point>({Point(window_right, window_top), Point(window_left, window_top),
-//                              Point(window_left, window_bottom), Point(window_right, window_bottom)}),
-//          RGBCode(1.0f, 1.0f, 1.0f), 1.0f)
-//         .draw();
-
-//     // 4. cut edge and add to printing_graph
-//     std::vector<Poly *> printing_graph;
-
-//     for (auto &bg : this->layer) {
-//         std::cerr << "---for each poly---\n";
-//         // (1) init
-//         // Poly *tmp_poly = dynamic_cast<Poly *>(bg.second);
-//         Poly *tmp_poly = bg.second;
-//         std::vector<Point> poly_points = tmp_poly->getPoints();
-
-//         // test
-//         // std::cerr << "View adding point each poly: ";
-//         // std::cerr << "(" << now_p->getX() << ":" << now_p->getY() << "), ";
-//         // !test
-
-//         // (2) cut with the Line(*last_p, *now_p) & *now_p
-//         // top
-//         Point *last_p = &poly_points[poly_points.size() - 1];
-//         std::vector<Point> tmp_poly_points;
-
-//         for (int i = 0; i < poly_points.size(); i++) {
-//             Point *now_p = &poly_points[i];
-
-//             bool last_posi = (last_p->getY() <= scene_top);  // 1:in, 0:out
-//             bool now_posi = (now_p->getY() <= scene_top);
-
-//             if (last_posi && now_posi)
-//                 tmp_poly_points.push_back(*now_p);
-//             else if (last_posi ^ now_posi) {  // xor
-//                 Point tmp_p = Line(*last_p, *now_p).calYCrossPoint(scene_top);
-
-//                 // last point has been deal with if in(including on line), sod don't double added
-//                 if (last_p->getY() != scene_top) tmp_poly_points.push_back(tmp_p);
-
-//                 // now_posi is in, so just add when *now_p isn't on the line
-//                 if (now_p->getY() < scene_top) tmp_poly_points.push_back(*now_p);
-//             }
-
-//             last_p = now_p;
-//         }
-
-//         poly_points = tmp_poly_points;
-
-//         if (!poly_points.size()) continue;
-//         for(auto& p:poly_points )
-//             std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-//         std::cerr << "\n";
-
-//         // left
-//         last_p = &poly_points[poly_points.size() - 1];
-//         tmp_poly_points.clear();
-
-//         for (int i = 0; i < poly_points.size(); i++) {
-//             Point *now_p = &poly_points[i];
-
-//             bool last_posi = last_p->getX() >= scene_left;  // 1:in, 0:out
-//             bool now_posi = now_p->getX() >= scene_left;
-
-//             if (last_posi && now_posi)
-//                 tmp_poly_points.push_back(*now_p);
-//             else if (last_posi ^ now_posi) {  // xor
-//                 Point tmp_p = Line(*last_p, *now_p).calXCrossPoint(scene_left);
-
-//                 // last point has been deal with if in(including on line), sod don't double added
-//                 if (last_p->getX() != scene_left) tmp_poly_points.push_back(tmp_p);
-
-//                 // now_posi is in, so just add when *now_p isn't on the line
-//                 if (now_p->getX() > scene_left) tmp_poly_points.push_back(*now_p);
-//             }
-
-//             last_p = now_p;
-//         }
-
-//         poly_points = tmp_poly_points;
-
-//         if (!poly_points.size()) continue;
-//         for(auto& p:poly_points )
-//             std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-//         std::cerr << "\n";
-
-//         // bottom
-//         last_p = &poly_points[poly_points.size() - 1];
-//         tmp_poly_points.clear();
-
-//         for (int i = 0; i < poly_points.size(); i++) {
-//             Point *now_p = &poly_points[i];
-
-//             bool last_posi = last_p->getY() >= scene_bottom;  // 1:in, 0:out
-//             bool now_posi = now_p->getY() >= scene_bottom;
-
-//             if (last_posi && now_posi)
-//                 tmp_poly_points.push_back(*now_p);
-//             else if (last_posi ^ now_posi) {  // xor
-//                 Point tmp_p = Line(*last_p, *now_p).calYCrossPoint(scene_bottom);
-
-//                 // last point has been deal with if in(including on line), sod don't double added
-//                 if (last_p->getY() != scene_bottom) tmp_poly_points.push_back(tmp_p);
-
-//                 // now_posi is in, so just add when *now_p isn't on the line
-//                 if (now_p->getY() > scene_bottom) tmp_poly_points.push_back(*now_p);
-//             }
-
-//             last_p = now_p;
-//         }
-
-//         poly_points = tmp_poly_points;
-
-//         if (!poly_points.size()) continue;
-//         for(auto& p:poly_points )
-//             std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-//         std::cerr << "\n";
-
-//         // right
-//         last_p = &poly_points[poly_points.size() - 1];
-//         tmp_poly_points.clear();
-
-//         for (int i = 0; i < poly_points.size(); i++) {
-//             Point *now_p = &poly_points[i];
-
-//             bool last_posi = last_p->getX() <= scene_right;  // 1:in, 0:out
-//             bool now_posi = now_p->getX() <= scene_right;
-
-//             if (last_posi && now_posi)
-//                 tmp_poly_points.push_back(*now_p);
-//             else if (last_posi ^ now_posi) {  // xor
-//                 Point tmp_p = Line(*last_p, *now_p).calXCrossPoint(scene_right);
-
-//                 // last point has been deal with if in(including on line), sod don't double added
-//                 if (last_p->getX() != scene_right) tmp_poly_points.push_back(tmp_p);
-
-//                 // now_posi is in, so just add when *now_p isn't on the line
-//                 if (now_p->getX() < scene_right) tmp_poly_points.push_back(*now_p);
-//             }
-
-//             last_p = now_p;
-//         }
-
-//         poly_points = tmp_poly_points;
-
-//         if (!poly_points.size()) continue;
-//         for(auto& p:poly_points )
-//             std::cerr << "Points: (" << p.getX() << ", " << p.getY() << "), ";
-//         std::cerr << "\n";
-
-//         // (3) add to printing_graph
-//         Poly *tmp_to_graph = new Poly(poly_points, tmp_poly->getRGBCode(), tmp_poly->getEdgeSize());
-//         printing_graph.push_back(tmp_to_graph);
-//     }
-
-//     // 5. print to screen
-//     // std::cerr << "Poly_size"
-//     for (Poly *p : printing_graph) {
-//         // (1) add view transform
-//         p->addTransform(result_tr);
-
-//         // (2) print
-//         // p->draw();
-//         p->fill();
-
-//         // (3) clear printing_graph's pointer
-//         Poly *tmp_p = p;
-//         p = nullptr;
-//         delete tmp_p;
-//     }
-
-//     return;
-// }
-
-// void Scene::clear()
-// {
-//     for (auto &bg : this->layer) {
-//         Poly *tmp_bg = bg.second;
-//         bg.second = nullptr;
-//         delete tmp_bg;
-//     }
-//     this->layer.clear();
-//     return;
-// }

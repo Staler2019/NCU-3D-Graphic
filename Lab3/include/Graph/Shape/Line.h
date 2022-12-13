@@ -74,24 +74,20 @@ public:
     virtual void draw() const override;
 };
 
-struct Line3D : public Shape3D {
-//private:
-    Vector3 start;
-    Vector3 end;
+// struct Vector3;
 
-//public:
+struct Line3D : public Shape3D {
+private:
+    struct Vector3 start;
+    struct Vector3 end;
+
+public:
     inline Line3D() : Shape3D() {}
 
-    inline Line3D(const Vector3 &start, const Vector3 &end) : start(start), end(end), Shape3D() {}
+    inline Line3D(const struct Vector3 &start, const struct Vector3 &end) : start(start), end(end), Shape3D() {}
 
-    inline Vector3 calcZCrossVec(const float z) const {
-        if (this->start == this->end) {
-            std::cerr << "Don't put same point in Line3D in calcV3CrossVec: " << line.start << std::endl;
-            exit(1);
-        }
+    struct Vector3 calcZCrossVec(const float z) const;
 
-        Vector3 m = this->start - this->end;
-        float scale = z / m.v3;
-        return line.end + scale * m;
-    }
+    inline struct Vector3 getStartVec3() const { return this->start;}
+    inline struct Vector3 getEndVec3() const { return this->end;}
 };

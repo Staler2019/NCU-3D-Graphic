@@ -19,7 +19,9 @@ class Transform3D : protected Matrix4 {
     void rotate(Vector3 vec_deg, bool printM = 1);
     void translate(Vector3 vec, bool printM = 1);
 
-    Vector3 getResult(Vector3 vec);
+    Vector3 getResult(const Vector3& vec) const;
+    Vector4 getResult(const Vector4& vec) const;
+    Transform3D operator*(const Transform3D& that) const;
 };
 
 // class Transform2D : public Matrix3 {};
@@ -39,14 +41,13 @@ class Transform2D {
     Transform2D();
 
     void reset();
-    void scale(float x_way, float y_way, bool printM = 1);
+    void scale(Vector2 vec, bool printM = 1);
     void rotate(float degree, bool printM = 1);
-    void translate(float del_x, float del_y, bool printM = 1);
+    void translate(Vector2 vec, bool printM = 1);
     void printMat();
 
-    Point getResult(Point);
+    Point getResult(Point) const;
 };
-
 
 // #define TRANS_SIZE 4
 

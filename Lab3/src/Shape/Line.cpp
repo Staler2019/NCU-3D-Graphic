@@ -5,13 +5,16 @@
 #include <iostream>
 
 #include "GRGB.h"
+#include "Math/Vector.h"
 #include "Shape/Point.h"
 #include "Shape/Shape.h"
 
 void Line::draw() const
 {
     if (isSamePoint(this->start_p, this->end_p)) {
-        Point(this->start_p.getX(), this->start_p.getY(), this->rgb, this->edge_size).draw();
+        Point(this->start_p.getX(), this->start_p.getY(), this->rgb,
+              this->edge_size)
+            .draw();
         return;
     }
 
@@ -23,7 +26,8 @@ void Line::draw() const
     float (Point::*base_func)(void) const = 0;
     float (Point::*in_counter_func)(void) const = 0;
 
-    if (std::abs(this->end_p.getY() - this->start_p.getY()) > std::abs(this->end_p.getX() - this->start_p.getX())) {
+    if (std::abs(this->end_p.getY() - this->start_p.getY()) >
+        std::abs(this->end_p.getX() - this->start_p.getX())) {
         lb = LineBase::LINE_BASE_Y;
         base_func = &Point::getY;
         in_counter_func = &Point::getX;
@@ -34,10 +38,12 @@ void Line::draw() const
         in_counter_func = &Point::getY;
     }
 
-    m = ((this->end_p.*in_counter_func)() - (this->start_p.*in_counter_func)()) /
+    m = ((this->end_p.*in_counter_func)() -
+         (this->start_p.*in_counter_func)()) /
         ((this->end_p.*base_func)() - (this->start_p.*base_func)());
 
-    bool end_first = ((this->start_p.*base_func)() > (this->end_p.*base_func)());
+    bool end_first =
+        ((this->start_p.*base_func)() > (this->end_p.*base_func)());
 
     base[!end_first] = (this->end_p.*base_func)();
     in_counter[!end_first] = (this->end_p.*in_counter_func)();
@@ -56,4 +62,17 @@ void Line::draw() const
         ic += m;
         b += 1.0f;
     } while (b <= base[1]);
+}
+
+Vector3 Line3D::calcZCrossVec(const float z) const
+{
+    if (this->start == this->end) {
+        std::cerr << "Don't put same point in Line3D in calcV3CrossVec: "
+                  << this->start << std::endl;
+        exit(1);
+    }
+
+    Vector3 m = this->start - this->end;
+    float scale = z / m.v3;
+    return this->end + m * scale;
 }

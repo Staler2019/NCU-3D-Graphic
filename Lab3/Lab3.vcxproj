@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="apps\Lab3.cpp" />
-    <ClCompile Include="extern\OBJ-Loader\src\OBJ_Loader.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\GObj.cpp" />
     <ClCompile Include="src\Math\Matrix.cpp" />
@@ -33,7 +32,6 @@
     <ClCompile Include="src\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="extern\OBJ-Loader\include\OBJ_Loader.h" />
     <ClInclude Include="include\Graph\Camera.h" />
     <ClInclude Include="include\Graph\GMath.h" />
     <ClInclude Include="include\Graph\GObj.h" />

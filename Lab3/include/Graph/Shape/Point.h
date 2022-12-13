@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GRGB.h"
+#include <iostream>
 #include "Shape/Shape.h"
 
 class Point : public Shape {
@@ -19,6 +20,8 @@ class Point : public Shape {
     inline float getY() const { return this->y; }
 
     inline void setXY(const float x, const float y) { this->x = x, this->y = y; }
+
+    friend std::ostream& operator<<(std::ostream& os, const Point& that);
 
     virtual void draw() const override;
 };

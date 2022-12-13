@@ -23,3 +23,10 @@ void Point::draw() const
     glEnd();
     // glFlush(); // debug
 }
+
+std::ostream& operator<<(std::ostream& os, const Point& that)
+{
+    os << "(" << that.x << ", " << that.y << ")";
+    return os;
+}
+
