@@ -38,13 +38,13 @@ void Transform3D::scale(Vector3 vec, bool printM)
     }
 }
 
-void Transform3D::rotate(Vector3 vec_deg, bool printM)
+void Transform3D::rotate(Vector3 vec_rad, bool printM)
 {
-    Matrix4 tmp_deg;  // TODO.
+    Matrix4 tmp_deg;
     // tmp_deg.ones(); // in constructor
 
-    // y // TODO.error?
-    const float r2 = toRad(vec_deg.v2);
+    // y
+    const float r2 = vec_rad.v2;
 
     tmp_deg.m[0][0] = cos(r2);
     tmp_deg.m[0][2] = sin(r2);
@@ -55,7 +55,7 @@ void Transform3D::rotate(Vector3 vec_deg, bool printM)
 
     // z
     tmp_deg.ones();
-    const float r3 = toRad(vec_deg.v3);
+    const float r3 = vec_rad.v3;
 
     tmp_deg.m[0][0] = cos(r3);
     tmp_deg.m[0][1] = -sin(r3);
@@ -66,7 +66,7 @@ void Transform3D::rotate(Vector3 vec_deg, bool printM)
 
     // x
     tmp_deg.ones();
-    const float r1 = toRad(vec_deg.v1);
+    const float r1 = vec_rad.v1;
 
     tmp_deg.m[1][1] = cos(r1);
     tmp_deg.m[1][2] = -sin(r1);
@@ -76,7 +76,7 @@ void Transform3D::rotate(Vector3 vec_deg, bool printM)
     *this = tmp_deg * (*this);
 
     if (printM) {
-        std::cerr << "Rotate: " << vec_deg << "\n";
+        std::cerr << "Rotate: " << vec_rad << "\n";
         this->print();
     }
 }

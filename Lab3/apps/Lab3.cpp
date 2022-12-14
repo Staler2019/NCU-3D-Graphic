@@ -84,11 +84,12 @@ int window;
 // my var
 std::ifstream infile;
 int win_width, win_height;
-Scene scene;  // TODO.
+Scene scene;
 Transform3D tr_tm;
 Camera cam;
-std::string mesh_folder = "./test_file/Mesh";
-std::string default_file = "./test_file/Data/Lab3C.in";
+std::string mesh_folder = "./Mesh/";
+std::string data_folder = "./Data/";
+std::string default_file = "./Data/Lab3A.in";
 std::string stderr_file = "stderr.log";
 
 // my func
@@ -119,7 +120,7 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
-    infile.open(argv[1]);
+    infile.open(data_folder + std::string(argv[1]));
 #endif  // __TEST__
 
     if (infile.fail()) {
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
     glutInitWindowSize(win_width, win_height);
     glutInitWindowPosition(100, 100);
     gluOrtho2D(0, win_width, 0, win_height);
-    window = glutCreateWindow("My Lab3 Window!");
+    window = glutCreateWindow("108502571 の Lab3!");
     glutSwapBuffers();
     glutDisplayFunc(display);
     gluOrtho2D(0, win_width, 0, win_height);
@@ -215,7 +216,7 @@ void commandHandler()
 
                 std::cout << " " << deg_x << " " << deg_y << " " << deg_z;
 
-                tr_tm.rotate(Vector3(deg_x, deg_y, deg_z));
+                tr_tm.rotate(Vector3(toRad(deg_x), toRad(deg_y), toRad(deg_z)));
             }
             else if (in_tmp == "clearData") {
                 scene.clear();
@@ -238,7 +239,7 @@ void commandHandler()
 
                 std::cout << " " << obj_name << "\n";
 
-                GObj *tmp_obj = new GObj(mesh_folder + "/" + obj_name, tr_tm);
+                GObj *tmp_obj = new GObj(mesh_folder + obj_name, tr_tm);
                 if (!tmp_obj->fail()) {
                     scene.addLayer(tmp_obj);
                 }
@@ -258,8 +259,8 @@ void commandHandler()
 
                 cam.setPosi(Vector3(epx, epy, epz));
                 cam.setFromTo(Vector3(COIx - epx, COIy - epy, COIz - epz),
-                              Tilt);
-                cam.setVision(Hither, Yon, Hav);
+                              toRad(Tilt));
+                cam.setVision(Hither, Yon, toRad(Hav));
             }
             else if (in_tmp == "display") {
                 clearScreen();

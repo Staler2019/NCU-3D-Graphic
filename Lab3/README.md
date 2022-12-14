@@ -53,18 +53,18 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 
 ### Lab 3
 
-- [ ] 註解(#)
+- [x] 註解(#)
 
   出現`#`時，不須執行該行的內容
   開頭
 
   要注意開頭會給兩個數字，分別是`window`的`width`和`height`
 
-- [ ] reset
+- [x] reset
 
   清除`transform_matrix`
 
-- [ ] translate
+- [x] translate
 
   輸入的指令為 `translate x y z`
 
@@ -72,7 +72,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
   `y` 代表沿著`y`軸移動`y`單位
   `z` 代表沿著`z`軸移動`z`單位
 
-- [ ] scale
+- [x] scale
 
   輸入的指令為 `scale x y z`
 
@@ -80,7 +80,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
   `y` 代表沿著`y`軸縮放`y`單位
   `z` 代表沿著`y`軸縮放`y`單位
 
-- [ ] rotate
+- [x] rotate
 
   輸入的指令為 `rotate x y z`
 
@@ -90,15 +90,15 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 
   :warning: 規定先對`y` 軸旋轉，再來是 `z` 軸，最後 `x`軸。 :warning:
 
-- [ ] clearData
+- [x] clearData
 
   清除所創建的物件(`obj`)
 
-- [ ] clearScreen
+- [x] clearScreen
 
   清除畫面
 
-- [ ] viewport
+- [x] viewport
 
   輸入的指令為 `view vxl vxr vyb vyt`
 
@@ -123,13 +123,13 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 
   在 `display` 才需要畫圖
 
-- [ ] object
+- [x] object
 
   指令為 `object obj`
 
   object 後面接的是檔案名稱，請把 obj 檔案內的所有的面都讀入你的`stack`中，並將圖形切成三角形(此次檔案只有四邊形及三角形)。
 
-- [ ] observe
+- [x] observe
 
   指令為 `observe epx epy epz COIx COIy COIz Tilt Hither Yon Hav`
 
@@ -150,7 +150,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
   `Yon` 為 `far` 的平面
   `Hav` 為 `FOV` 即 `field of view`
 
-- [ ] display
+- [x] display
 
   在做 display 的時候就做一次`clearScreen`
 
@@ -162,7 +162,7 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 
   這次畫點的時候不需要 `height-y`。
 
-- [ ] end
+- [x] end
 
   結束視窗
 
@@ -178,6 +178,8 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 4. 完成圖形剪裁
 5. 完成 View 縮放矩陣
 6. 優化程式
+
+#### 已知問題
 
 ### Lab 2
 

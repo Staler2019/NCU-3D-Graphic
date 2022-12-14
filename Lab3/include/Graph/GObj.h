@@ -1,27 +1,46 @@
 #pragma once
 
 #include <cstring>
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include "Math/Vector.h"
 #include "Transform.h"
 
+using V = Vector3;
+using VT = Vector3;
+using VN = Vector3;
+
 struct Face {
-    std::vector<Vector3> vertexes;
-    inline Face(std::vector<Vector3> vertexes) : vertexes(vertexes) {}
+    std::vector<V*> Vs;
+    std::vector<VT*> VTs;
+    std::vector<VN*> VNs;
+
+    inline Face(const std::vector<V*>& Vs, const std::vector<VT*>& VTs,
+                const std::vector<VN*>& VNs)
+        : Vs(Vs), VTs(VTs), VNs(VNs)
+    {
+    }
 };
 
 class GObj {
    private:
     std::string file_name;
+
     bool thread_lock = false;
     bool loaded = false;
+
     Transform3D tm;
-    std::vector<Vector3> loaded_vertexes;
-    std::vector<Face> loaded_faces;
+
+    std::vector<V> Vs;
+    std::vector<VT> VTs;
+    std::vector<VN> VNs;
+    std::vector<Face> faces;
 
     void load_thread_job();
     void load();
+    void clear();
 
    public:
     inline GObj(const std::string file_name, const Transform3D& tm)
@@ -34,10 +53,32 @@ class GObj {
 
     inline Transform3D getTM() const { return this->tm; }
 
-    inline std::vector<Face> getLoadedFaces() const
-    {
-        return this->loaded_faces;
-    }
+    inline std::vector<Face> getFaces() const { return this->faces; }
 
     inline std::string getFileName() const { return this->file_name; }
 };
+
+std::vector<std::string> tokenize(const std::string str, const char del);
+
+// inline float strToFloat(std::string num_str)
+// {
+//     std::stringstream ss;
+//     float num;
+
+//     ss << num_str;
+//     ss >> num;
+
+//     return num;
+// }
+
+// inline int strToInt(std::string num_str)
+// {
+//     std::stringstream ss;
+//     int num;
+
+//     ss << num_str;
+//     ss >> num;
+
+//     return num;
+// }
+

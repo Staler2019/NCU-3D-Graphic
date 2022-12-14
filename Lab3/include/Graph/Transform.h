@@ -4,7 +4,7 @@
 #include "Math/Vector.h"
 #include "Shape/Point.h"
 
-class Transform3D : protected Matrix4 {
+class Transform3D : public Matrix4 {
    private:
     void operator=(const Matrix4& that);
 
@@ -16,7 +16,7 @@ class Transform3D : protected Matrix4 {
     void print();
     void reset();
     void scale(Vector3 vec, bool printM = 1);
-    void rotate(Vector3 vec_deg, bool printM = 1);
+    void rotate(Vector3 vec_rad, bool printM = 1);
     void translate(Vector3 vec, bool printM = 1);
 
     Vector3 getResult(const Vector3& vec) const;

@@ -19,10 +19,10 @@ Transform2D Scene::getViewportTransform() const
                      (this->vp.vyt - this->vp.vyb) * this->win_width / 4);
 
     Transform2D tr;
-    std::cerr << "To screen:\n";  // TODO.
-    tr.translate(Vector2(1.0f, 1.0f));
-    tr.scale(tmp_scal);
-    tr.translate(tmp_tran);
+
+    tr.translate(Vector2(1.0f, 1.0f), false);
+    tr.scale(tmp_scal, false);
+    tr.translate(tmp_tran, false);
 
     return tr;
 }
@@ -34,7 +34,8 @@ void Scene::drawViewport(const Transform2D &tr) const
     Point rb = tr.getResult(Point(1.0f, -1.0f));
     Point rt = tr.getResult(Point(1.0f, 1.0f));
 
-    std::cerr << lb << " " << lt << " " << rb << " " << rt << std::endl;
+    std::cerr << "Viewport 4 points: " << lb << " " << lt << " " << rb << " "
+              << rt << std::endl;
 
     Line(lb, lt, GRGB(1.0f, 1.0f, 1.0f)).draw();
     Line(lt, rt, GRGB(1.0f, 1.0f, 1.0f)).draw();
@@ -42,7 +43,7 @@ void Scene::drawViewport(const Transform2D &tr) const
     Line(rb, lb, GRGB(1.0f, 1.0f, 1.0f)).draw();
 }
 
-std::vector<Vector4> cutFace(std::vector<Vector4> vec4s)
+void cutFace(std::vector<Vector4> &vec4s)
 {
     // cut line
     std::vector<Vector4> tmp_vec4s;
@@ -58,9 +59,9 @@ std::vector<Vector4> cutFace(std::vector<Vector4> vec4s)
             now_c = getPlaneC(plane_i, now_vec4);
 
             if (now_c >= 0) {
-                if (last_c < 0) {
-                    Vector4 *tmp_vec4 =
-                        calcPlaneVec4(plane_i, last_vec4, now_vec4, last_c, now_c);
+                if (last_c < 0 && now_c > 0) {
+                    Vector4 *tmp_vec4 = calcPlaneVec4(plane_i, last_vec4,
+                                                      now_vec4, last_c, now_c);
 
                     if (tmp_vec4 != nullptr) tmp_vec4s.push_back(*tmp_vec4);
 
@@ -69,12 +70,14 @@ std::vector<Vector4> cutFace(std::vector<Vector4> vec4s)
                 tmp_vec4s.push_back(*now_vec4);
             }
             else {
-                Vector4 *tmp_vec4 =
-                    calcPlaneVec4(plane_i, last_vec4, now_vec4, last_c, now_c);
+                if (last_c > 0) {
+                    Vector4 *tmp_vec4 = calcPlaneVec4(plane_i, last_vec4,
+                                                      now_vec4, last_c, now_c);
 
-                if (tmp_vec4 != nullptr) tmp_vec4s.push_back(*tmp_vec4);
+                    if (tmp_vec4 != nullptr) tmp_vec4s.push_back(*tmp_vec4);
 
-                delete tmp_vec4;
+                    delete tmp_vec4;
+                }
             }
 
             last_vec4 = now_vec4;
@@ -83,9 +86,9 @@ std::vector<Vector4> cutFace(std::vector<Vector4> vec4s)
 
         vec4s = tmp_vec4s;
         tmp_vec4s.clear();
-    }
 
-    return vec4s;
+        if (vec4s.empty()) return;
+    }
 }
 
 float getPlaneC(const int plane_i, const Vector4 *vec4)
@@ -121,8 +124,9 @@ float getPlaneC(const int plane_i, const Vector4 *vec4)
     }
 }
 
-Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4, const Vector4 *now_vec4,
-                       const float last_c, const float now_c)
+Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4,
+                       const Vector4 *now_vec4, const float last_c,
+                       const float now_c)
 {
     Vector4 *tmp_vec4 = new Vector4();
 
@@ -146,13 +150,12 @@ Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4, const Vect
 void Scene::show(const Camera &cam) const
 {
     Transform3D tr_em = cam.getEM();  // object's transform
-    Transform3D tr_pm = cam.getPM(this->getAspectRatio());
+    Transform3D tr_pm = cam.getPM();
     Transform2D tr_view = this->getViewportTransform();
-
-    this->drawViewport(tr_view);
 
     for (GObj *ol : this->layers) {  // for each .obj
         Transform3D tr_tm = ol->getTM();
+        Transform3D tr_MVP = tr_pm * tr_em * tr_tm;
 
         // stderr
         {
@@ -163,54 +166,83 @@ void Scene::show(const Camera &cam) const
             tr_em.print();
             std::cerr << "P Matrix:\n";
             tr_pm.print();
+            std::cerr << "View to Screem Matrix:\n";
+            tr_view.printMat();
         }
 
-        for (Face &face : ol->getLoadedFaces()) {  // for each triangle
-            std::vector<Vector3> vecs;
+        for (Face &face : ol->getFaces()) {  // for each triangle
+            // std::vector<Vector3> vecs;
 
-            for (Vector3 &ver : face.vertexes)  // for each vertex
-                vecs.emplace_back(ver.v1, ver.v2, ver.v3);
+            // // std::cerr << "face points: ";
+            // for (Vector3 *vec3 : face.Vs) {
+            //     vecs.push_back(*vec3);
+            //     // std::cerr << *vec3 << " ";
+            // }
+            // // std::cerr << "\n";
 
-            // tm
-            {
-                std::vector<Vector3> tmp_vecs;
+            // // tm
+            // {
+            //     std::vector<Vector3> tmp_vecs;
 
-                for (auto &vec : vecs)
-                    tmp_vecs.emplace_back(tr_tm.getResult(vec));
+            //     for (auto &vec : vecs)
+            //         tmp_vecs.emplace_back(tr_tm.getResult(vec));
 
-                vecs = tmp_vecs;
-            }
-            // em
-            {
-                std::vector<Vector3> tmp_vecs;
+            //     vecs = tmp_vecs;
+            // }
+            // // em
+            // {
+            //     std::vector<Vector3> tmp_vecs;
 
-                for (auto &vec : vecs)
-                    tmp_vecs.emplace_back(tr_em.getResult(vec));
+            //     for (auto &vec : vecs)
+            //         tmp_vecs.emplace_back(tr_em.getResult(vec));
 
-                vecs = tmp_vecs;
-            }
-            // pm
+            //     vecs = tmp_vecs;
+            // }
+            // // pm
+            // std::vector<Vector4> vec4s;
+            // {
+            //     for (auto &vec : vecs)
+            //         vec4s.emplace_back(tr_pm.getResult(Vector4(vec, 1)));
+            // }
+
             std::vector<Vector4> vec4s;
+
+            for (Vector3 *vec3 : face.Vs)
+                vec4s.emplace_back(tr_MVP.getResult(Vector4(*vec3, 1)));
+
+            // // calculate necessary face // TODO. error
+            // {
+            //     Vector4 vec4_1 = vec4s[0] - vec4s[1];
+            //     Vector4 vec4_2 = vec4s[2] - vec4s[1];
+            //     Vector3 vec3_1(vec4_1.v1, vec4_1.v2, vec4_1.v3);
+            //     Vector3 vec3_2(vec4_2.v1, vec4_2.v2, vec4_2.v3);
+
+            //     Vector3 vec3_cr = vec3_1.cross(vec3_2);
+
+            //     // if (Vector3(0, 0, 1).dot(vec3_cr) <= 0) continue;  // 背面
+            //     if (vec3_cr.v3 <= 0) continue;  // 背面
+            // }
+
+            // cut face
             {
-                for (auto &vec : vecs)
-                    vec4s.emplace_back(tr_pm.getResult(Vector4(vec, 1)));
+                cutFace(vec4s);
+
+                if (vec4s.empty()) continue;
             }
-
-            // vec4s = cutFace(vec4s); // TODO. error
-
             // perspective divide
+            std::vector<Vector3> vec3s;
             {
-                vecs.clear();
+                // vecs.clear();
 
                 for (auto &vec : vec4s)
-                    vecs.emplace_back(this->perspectiveDivide(vec));
+                    vec3s.emplace_back(this->perspectiveDivide(vec));
             }
             // win to view
             {
                 Point last_p =
-                    tr_view.getResult(Point(vecs.back().v1, vecs.back().v2));
+                    tr_view.getResult(Point(vec3s.back().v1, vec3s.back().v2));
 
-                for (auto &vec : vecs) {
+                for (auto &vec : vec3s) {
                     Point now_p = tr_view.getResult(Point(vec.v1, vec.v2));
 
                     Line(last_p, now_p, this->default_rgb).draw();
@@ -220,6 +252,8 @@ void Scene::show(const Camera &cam) const
             }
         }
     }
+
+    this->drawViewport(tr_view);
 }
 
 void Scene::clear()

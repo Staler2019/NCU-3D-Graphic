@@ -65,7 +65,7 @@ class Scene {
     void clear();
 };
 
-std::vector<Vector4> cutFace(std::vector<Vector4> vec4s);
+void cutFace(std::vector<Vector4>& vec4s);
 
 float getPlaneC(const int plane_i, const Vector4 *vec4);
 

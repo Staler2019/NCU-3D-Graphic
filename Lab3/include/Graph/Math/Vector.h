@@ -73,10 +73,9 @@ struct Vector3 {
         return Vector3(this->v1 / that, this->v2 / that, this->v3 / that);
     }
 
-    inline Vector3 dot(const Vector3 &that) const
+    inline float dot(const Vector3 &that) const
     {
-        return Vector3(this->v1 * that.v1, this->v2 * that.v2,
-                       this->v3 * that.v3);
+        return (this->v1 * that.v1 + this->v2 * that.v2 + this->v3 * that.v3);
     }
 
     inline Vector3 cross(const Vector3 &that) const
@@ -116,7 +115,7 @@ struct Vector4 {
         : v1(v1), v2(v2), v3(v3), v4(v4)
     {
     }
-    inline Vector4(const Vector3 &vec3, float v4)
+    inline Vector4(const Vector3 &vec3, float v4) // v4 = 0 is a direction vector
         : v1(vec3.v1), v2(vec3.v2), v3(vec3.v3), v4(v4)
     {
     }
