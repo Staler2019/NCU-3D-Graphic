@@ -179,8 +179,6 @@ chmod 777 ./build.sh && chmod 777 ./run.sh
 5. 完成 View 縮放矩陣
 6. 優化程式
 
-#### 已知問題
-
 ### Lab 2
 
 - [x] 註解(#)
