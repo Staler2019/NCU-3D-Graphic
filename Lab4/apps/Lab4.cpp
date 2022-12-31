@@ -8,18 +8,12 @@
 
 /*
  * 3D rendering pipeline:
- *              TM            EM  Parallel Projection(pm)  Perspective
- * Divide(Projection) Object Space -> World Space -> Eye Space -> Perspective
- * Space -> Image Space
+ *              TM             EM           pm
+ * Object Space -> World Space -> Eye Space -> Perspective Space
  *
- *   Window to Viewport
- *          -> Screen Space
+ *   Perspective Divide  Window to Viewport
+ *          -> Image Space -> Screen Space
  */
-
-// first
-#include <GL/glut.h>  // need to be first include
-// second
-#include <GL/gl.h>  // need to be the second
 
 #include <algorithm>
 #include <cmath>
@@ -32,8 +26,10 @@
 #include <utility>
 
 #include "Camera.h"
+#include "GLInclude.h"
 #include "GMath.h"
 #include "GObj.h"
+#include "Light.h"
 #include "Scene.h"
 #include "Transform.h"
 // #include "dotenv.h"
@@ -68,8 +64,7 @@ class capture_outputs {
     const redirect_outputs myRedirect;
 
    public:
-    capture_outputs(std::ostream &stream = std::cout)
-        : myContents(), myRedirect(myContents, stream)
+    capture_outputs(std::ostream &stream = std::cout) : myContents(), myRedirect(myContents, stream)
     {
     }
 
@@ -84,21 +79,22 @@ int window;
 // my var
 std::ifstream infile;
 int win_width, win_height;
-Scene scene;
+Scene3D scene;
 Transform3D tr_tm;
 Camera cam;
 std::string mesh_folder = "./Mesh/";
 std::string data_folder = "./Data/";
-std::string default_file = "./Data/Lab3A.in";
+std::string default_file = "./Data/Lab4D.in";
 std::string stderr_file = "stderr.log";
 
 // my func
 void clearScreen();
-
 void commandHandler();
+// void screenShot();
 
 // glut inherit func
 void display();
+// void keyDown(unsigned char key, int x, int y);
 
 int main(int argc, char *argv[])
 {
@@ -135,8 +131,7 @@ int main(int argc, char *argv[])
     srand(unsigned(time(NULL)));  // random
 
     infile >> win_width >> win_height;
-    std::cerr << "Create window in (" << win_width << ", " << win_height
-              << ")\n";
+    std::cerr << "Create window in (" << win_width << ", " << win_height << ")\n";
     scene.setWindow(win_width, win_height);
 
     // glut init
@@ -148,6 +143,7 @@ int main(int argc, char *argv[])
     window = glutCreateWindow("108502571 Lab4!");
     glutSwapBuffers();
     glutDisplayFunc(display);
+    // glutKeyboardFunc(keyDown);
     gluOrtho2D(0, win_width, 0, win_height);
 
     commandHandler();
@@ -218,7 +214,7 @@ void commandHandler()
 
                 tr_tm.rotate(Vector3(toRad(deg_x), toRad(deg_y), toRad(deg_z)));
             }
-            else if (in_tmp == "clearData") {
+            else if (in_tmp == "cleardata") {
                 scene.clear();
             }
             else if (in_tmp == "clearScreen") {
@@ -228,18 +224,21 @@ void commandHandler()
                 float vxl, vxr, vyb, vyt;
                 infile >> vxl >> vxr >> vyb >> vyt;
 
-                std::cout << " " << vxl << " " << vxr << " " << vyb << " "
-                          << vyt;
+                std::cout << " " << vxl << " " << vxr << " " << vyb << " " << vyt;
 
                 scene.setViewport(vxl, vxr, vyb, vyt);
             }
             else if (in_tmp == "object") {
                 std::string obj_name;
-                infile >> obj_name;
+                float Or, Og, Ob, Kd, Ks;
+                int N;
+                infile >> obj_name >> Or >> Og >> Ob >> Kd >> Ks >> N;
 
-                std::cout << " " << obj_name << "\n";
+                std::cout << " " << obj_name << " " << Or << " " << Og << " " << Ob << " " << Kd
+                          << " " << Ks << " " << N << "\n";
 
-                GObj *tmp_obj = new GObj(mesh_folder + obj_name, tr_tm);
+                GObj *tmp_obj =
+                    new GObj(mesh_folder + obj_name, tr_tm, GRGB(Or, Og, Ob), Kd, Ks, N);
                 if (!tmp_obj->fail()) {
                     scene.addLayer(tmp_obj);
                 }
@@ -250,31 +249,53 @@ void commandHandler()
             }
             else if (in_tmp == "observer") {
                 float epx, epy, epz, COIx, COIy, COIz, Tilt, Hither, Yon, Hav;
-                infile >> epx >> epy >> epz >> COIx >> COIy >> COIz >> Tilt >>
-                    Hither >> Yon >> Hav;
+                infile >> epx >> epy >> epz >> COIx >> COIy >> COIz >> Tilt >> Hither >> Yon >> Hav;
 
-                std::cout << " " << epx << " " << epy << " " << epz << " "
-                          << COIx << " " << COIy << " " << COIz << " " << Tilt
-                          << " " << Hither << " " << Yon << " " << Hav;
+                std::cout << " " << epx << " " << epy << " " << epz << " " << COIx << " " << COIy
+                          << " " << COIz << " " << Tilt << " " << Hither << " " << Yon << " "
+                          << Hav;
 
                 cam.setPosi(Vector3(epx, epy, epz));
-                cam.setFromTo(Vector3(COIx - epx, COIy - epy, COIz - epz),
-                              toRad(Tilt));
+                cam.setFromTo(Vector3(COIx - epx, COIy - epy, COIz - epz), toRad(Tilt));
                 cam.setVision(Hither, Yon, toRad(Hav));
             }
             else if (in_tmp == "display") {
-                clearScreen();
+                // clearScreen(); // already change buffer in showTextures
 
                 std::cout << "\n" << std::endl;
                 std::cerr << "Start draw a "
                              "view:--------------------------------------------"
                              "------------\n";
 
-                scene.show(cam);
-                glutPostRedisplay();
-                glFinish();
+                scene.showTextures(cam);
+                // scene.showLines(cam);
+                // glutPostRedisplay();
+                // glFinish();
                 glFlush();
                 break;
+            }
+            else if (in_tmp == "ambient") {
+                float KIr, KIg, KIb;
+                infile >> KIr >> KIg >> KIb;
+                std::cout << " " << KIr << " " << KIg << " " << KIb;
+
+                scene.setAmbientRGB(GRGB(KIr, KIg, KIb));
+            }
+            else if (in_tmp == "background") {
+                float Br, Bg, Bd;
+                infile >> Br >> Bg >> Bd;
+                std::cout << " " << Br << " " << Bg << " " << Bd;
+
+                scene.setBGRGB(GRGB(Br, Bg, Bd));
+            }
+            else if (in_tmp == "light") {
+                int idx;
+                float Ipr, Ipg, Ipb, Ix, Iy, Iz;
+                infile >> idx >> Ipr >> Ipg >> Ipb >> Ix >> Iy >> Iz;
+                std::cout << " " << idx << " " << Ipr << " " << Ipg << " " << Ipb << " " << Ix
+                          << " " << Iy << " " << Iz;
+
+                scene.setLight(idx, Light(Vector3(Ix, Iy, Iz), GRGB(Ipr, Ipg, Ipb)));
             }
             else if (in_tmp == "end") {
                 std::cout << std::endl;
@@ -287,3 +308,40 @@ void commandHandler()
         }
     }
 }
+
+// void keyDown(unsigned char key, int x, int y)
+// {
+//     switch (key) {
+//         case 's':
+//         case 'S': {
+//             screenShot();
+//             break;
+//         }
+//     }
+// }
+
+// void screenShot()
+// {
+//     time_t now = time(0);
+//     char dt[128];
+//     errno_t err_time = ctime_s(dt, sizeof dt, &now);
+
+//     std::string f_name = dt;
+//     std::replace(f_name.begin(), f_name.end(), ' ', '-');
+//     f_name += ".png";
+
+//     int &dimx = win_width;
+//     int &dimy = win_height;
+
+//     size_t imsize = 3 * dimx * dimy;
+//     char *pixels = (char *)malloc(imsize * sizeof(char));
+//     glReadPixels(0, 0, dimx, dimy, GL_RGB, GL_UNSIGNED_BYTE, pixels);
+
+//     FILE *fp;
+//     errno_t err = fopen_s(&fp, f_name.c_str(), "wb");
+//     fprintf(fp, "P6\n%d %d\n255\n", dimx, dimy);
+//     fwrite(pixels, sizeof(char), imsize, fp);
+//     fclose(fp);
+
+//     free(pixels);
+// }

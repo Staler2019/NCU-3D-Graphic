@@ -18,6 +18,8 @@ set(graph-headers
     "${CMAKE_SOURCE_DIR}/include/Graph/GShape.h"
     "${CMAKE_SOURCE_DIR}/include/Graph/Scene.h"
     "${CMAKE_SOURCE_DIR}/include/Graph/Transform.h"
+    "${CMAKE_SOURCE_DIR}/include/Graph/Util.h"
+    "${CMAKE_SOURCE_DIR}/include/Graph/Light.h"
 )
 
 set(graph-src-files
@@ -31,6 +33,7 @@ set(graph-src-files
     GObj.cpp
     Scene.cpp
     Transform.cpp
+    Util.cpp
 )
 
 # Make an automatic library - will be static or dynamic based on user setting

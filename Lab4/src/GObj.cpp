@@ -2,23 +2,22 @@
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
-// #include <thread>
 #include <vector>
 
 #include "Math/Vector.h"
+#include "Util.h"
 
 void GObj::clear()
 {
-    for (Face& f : this->faces) {
-        for (V* v : f.Vs) v = nullptr;
-        for (VT* vt : f.VTs) vt = nullptr;
-        for (VN* vn : f.VNs) vn = nullptr;
+    // for (Face& f : this->faces) {
+    //     for (V* v : f.Vs) v = nullptr;
+    //     for (VT* vt : f.VTs) vt = nullptr;
+    //     for (VN* vn : f.VNs) vn = nullptr;
 
-        f.Vs.clear();
-        f.VTs.clear();
-        f.VNs.clear();
-    }
+    //     f.Vs.clear();
+    //     f.VTs.clear();
+    //     f.VNs.clear();
+    // }
 
     this->faces.clear();
     this->Vs.clear();
@@ -45,14 +44,10 @@ void GObj::load_thread_job()
         std::string tmp_in;
 
         while (getline(infile, tmp_in)) {
-            if (tmp_in.empty()) continue;
-            if (tmp_in.back() == '\r') {
-                if (tmp_in.length() == 1) continue;
-
-                tmp_in = tmp_in.substr(0, tmp_in.length() - 1);
-            }
-
             std::vector<std::string> tokens = tokenize(tmp_in, ' ');
+
+            if (tokens.empty()) continue;
+
             // std::cerr << tokens.size() << "\n";
 
             // for (auto& token : tokens) {
@@ -207,15 +202,4 @@ void GObj::load()
                   << " is loaded...please wait for Pre. Op.\n";
         return;
     }
-}
-
-std::vector<std::string> tokenize(const std::string str, const char del)
-{
-    std::stringstream ss(str);
-    std::string tmp;
-    std::vector<std::string> ans;
-
-    while (getline(ss, tmp, del)) ans.push_back(tmp);
-
-    return ans;
 }

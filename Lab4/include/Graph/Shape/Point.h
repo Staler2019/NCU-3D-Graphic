@@ -41,6 +41,8 @@ class Point : public Shape {
     friend std::ostream& operator<<(std::ostream& os, const Point& that);
 
     virtual void draw() const override;
+
+    inline Vector2 toVec2() const { return Vector2(this->x, this->y); }
 };
 
 inline bool isSamePoint(const Point& p1, const Point& p2)

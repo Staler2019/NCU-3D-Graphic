@@ -4,6 +4,33 @@
 
 #include "Math/Vector.h"
 
+struct Matrix2 {
+    /*
+        |m00 m01|
+        |m10 m11|
+    */
+    bool exist = true;
+
+    float m[2][2]{};
+
+    Matrix2();
+
+    Matrix2(const float that[2][2]);
+
+    Matrix2(const float m00, const float m01, const float m10,
+                   const float m11);
+
+    void ones();
+
+    void zeros();
+
+    Matrix2 inverse() const;
+
+    inline bool isExist() const { return this->exist; }
+
+    Vector2 operator*(const Vector2& that) const;
+};
+
 struct Matrix4 {
     /*
         |m00 m01 m02 m03|
@@ -15,7 +42,8 @@ struct Matrix4 {
 
     Matrix4();
     Matrix4(const float that[4][4]);
-    inline Matrix4(const Vector3& vec1, const Vector3& vec2, const Vector3& vec3)
+    inline Matrix4(const Vector3& vec1, const Vector3& vec2,
+                   const Vector3& vec3)
     {
         this->m[0][0] = vec1.v1;
         this->m[0][1] = vec1.v2;

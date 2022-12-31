@@ -30,6 +30,7 @@
     <ClCompile Include="src\Shape\Point.cpp" />
     <ClCompile Include="src\Shape\Poly.cpp" />
     <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\Util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Graph\Camera.h" />
@@ -47,6 +48,7 @@
     <ClInclude Include="include\Graph\Shape\Poly.h" />
     <ClInclude Include="include\Graph\Shape\Shape.h" />
     <ClInclude Include="include\Graph\Transform.h" />
+    <ClInclude Include="include\Graph\Util.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

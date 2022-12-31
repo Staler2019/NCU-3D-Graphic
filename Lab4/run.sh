@@ -10,4 +10,4 @@ echo "Using test file: ./Data/$TESTFILE"
 
 
 # ./build/app/lab2 $TESTFILE
-./build/lab3 "./$TESTFILE"
+./build/lab4 "./$TESTFILE"

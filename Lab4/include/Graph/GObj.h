@@ -7,6 +7,8 @@
 
 #include "Math/Vector.h"
 #include "Transform.h"
+#include "Util.h"
+#include "GRGB.h"
 
 using V = Vector3;
 using VT = Vector3;
@@ -43,8 +45,13 @@ class GObj {
     void clear();
 
    public:
-    inline GObj(const std::string file_name, const Transform3D& tm)
-        : file_name(file_name), tm(tm)
+    GRGB rgb;
+    float Kd;
+    float Ks;
+    int N; // gloss
+
+    inline GObj(const std::string file_name, const Transform3D& tm, const GRGB& grgb, float Kd, float Ks, int N)
+        : file_name(file_name), tm(tm), rgb(grgb), Kd(Kd), Ks(Ks), N(N)
     {
         this->load();
     }
@@ -57,28 +64,3 @@ class GObj {
 
     inline std::string getFileName() const { return this->file_name; }
 };
-
-std::vector<std::string> tokenize(const std::string str, const char del);
-
-// inline float strToFloat(std::string num_str)
-// {
-//     std::stringstream ss;
-//     float num;
-
-//     ss << num_str;
-//     ss >> num;
-
-//     return num;
-// }
-
-// inline int strToInt(std::string num_str)
-// {
-//     std::stringstream ss;
-//     int num;
-
-//     ss << num_str;
-//     ss >> num;
-
-//     return num;
-// }
-

@@ -151,11 +151,13 @@ void Scene::show(const Camera &cam) const
 {
     Transform3D tr_em = cam.getEM();  // object's transform
     Transform3D tr_pm = cam.getPM();
+    Transform3D tr_VP = tr_pm * tr_em;
+
     Transform2D tr_view = this->getViewportTransform();
 
     for (GObj *ol : this->layers) {  // for each .obj
         Transform3D tr_tm = ol->getTM();
-        Transform3D tr_MVP = tr_pm * tr_em * tr_tm;
+        Transform3D tr_MVP = tr_VP * tr_tm;
 
         // stderr
         {
@@ -166,7 +168,7 @@ void Scene::show(const Camera &cam) const
             tr_em.print();
             std::cerr << "P Matrix:\n";
             tr_pm.print();
-            std::cerr << "View to Screem Matrix:\n";
+            std::cerr << "View to Screen Matrix:\n";
             tr_view.printMat();
         }
 
@@ -212,7 +214,7 @@ void Scene::show(const Camera &cam) const
 
             // // calculate necessary face // TODO. error
             // {
-            //     Vector4 vec4_1 = vec4s[0] - vec4s[1];
+            //     Vector4 vec4_1 = vec4s[1] - vec4s[0];
             //     Vector4 vec4_2 = vec4s[2] - vec4s[1];
             //     Vector3 vec3_1(vec4_1.v1, vec4_1.v2, vec4_1.v3);
             //     Vector3 vec3_2(vec4_2.v1, vec4_2.v2, vec4_2.v3);

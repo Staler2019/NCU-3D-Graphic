@@ -2,12 +2,8 @@
 
 #include <iostream>
 
+#include "GLInclude.h"
 #include "Math/Util.h"
-
-// first
-#include <GL/glut.h>  // need to be first include
-// second
-#include <GL/gl.h>  // need to be the second
 
 void Point::draw() const
 {
@@ -29,4 +25,3 @@ std::ostream& operator<<(std::ostream& os, const Point& that)
     os << "(" << that.x << ", " << that.y << ")";
     return os;
 }
-

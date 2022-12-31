@@ -10,7 +10,14 @@
         ".idea": true,
         ".vs": true,
         "Debug": true,
-        "**/cmake-build-debug": true
+        "**/cmake-build-debug": true,
+        "extern": true,
+        "build": true,
+        "*.dll": true,
+        "Lab3.vcxproj": true,
+        "Lab3.vcxproj.filters": true,
+        "Lab3.vcxproj.user": true,
+        "Lab4.sln": true
     },
     "explorerExclude.backup": {},
     "files.associations": {

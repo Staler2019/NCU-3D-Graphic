@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "GObj.h"
 #include "GRGB.h"
+#include "Light.h"
 #include "Shape/Line.h"
 #include "Shape/Poly.h"
 
@@ -17,13 +18,16 @@ struct ViewPort {
     float vyt;
 };
 
-class Scene {
+class Scene3D {
    private:
     std::vector<GObj *> layers;
     GRGB default_rgb;
+    GRGB bg_rgb;
+    GRGB ambient_rgb;
     int win_width;
     int win_height;
     ViewPort vp;
+    std::map<int, Light> lights;
 
     inline Vector3 perspectiveDivide(const Vector4 vec4) const
     {
@@ -35,13 +39,30 @@ class Scene {
 
     void drawViewport(const Transform2D &tr) const;
 
-    inline constexpr float getAspectRatio() const
+    inline float getAspectRatio() const
     {
         return this->win_width / this->win_height;
     }
 
+    std::vector<std::vector<float>> initZBuffer() const;
+
+    std::vector<std::vector<GRGB>> initCBuffer(const Transform2D &tr) const;
+
+    void drawBuffer(const std::vector<std::vector<GRGB>> &c_buffer) const;
+
+    // GRGB calcLight(const std::vector<Vector3 *> &obj_Vs,
+    //                const Vector3 &cam_posi, const Transform3D &tr_tm,
+    //                const GRGB &obj_grgb, const float Kd, const float Ks,
+    //                const int N) const;
+
+    // use points's original location
+    GRGB calcLight(Vector3 vec3_point, const Vector3 &normal,
+                       Vector3 cam_posi, const Transform3D &tr_tm,
+                       const GRGB &obj_grgb, const float Kd, const float Ks,
+                       const int N, bool modeRV = true) const;
+
    public:
-    inline Scene() { this->default_rgb = GRGB(0.0f, 1.0f, 0.0f); }
+    inline Scene3D() { this->default_rgb = GRGB(0.0f, 1.0f, 0.0f); }
 
     inline void setWindow(const int win_width, const int win_height)
     {
@@ -60,14 +81,26 @@ class Scene {
 
     inline void addLayer(GObj *ol) { this->layers.push_back(ol); }
 
-    void show(const Camera &cam) const;
+    void showLines(const Camera &cam) const;
+
+    void showTextures(const Camera &cam) const;  // TODO. lab4
 
     void clear();
+
+    inline void setBGRGB(const GRGB &rgb) { this->bg_rgb = rgb; }
+
+    inline void setAmbientRGB(const GRGB &rgb) { this->ambient_rgb = rgb; }
+
+    inline void setLight(const int index, const Light &light)
+    {
+        this->lights[index] = light;
+    }
 };
 
-void cutFace(std::vector<Vector4>& vec4s);
+void cutFace(std::vector<Vector4> &vec4s);
 
 float getPlaneC(const int plane_i, const Vector4 *vec4);
 
-Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4, const Vector4 *now_vec4,
-                       const float last_c, const float now_c);
+Vector4 *calcPlaneVec4(const float plane_i, const Vector4 *last_vec4,
+                       const Vector4 *now_vec4, const float last_c,
+                       const float now_c);
